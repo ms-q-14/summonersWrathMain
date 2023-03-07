@@ -7,7 +7,7 @@ const Navbar = () => {
       <img
         src={summonerLogo}
         alt="Summoner Logo"
-        className="w-[600px] h-[200px]  object-contain cursor-pointer pt-6"
+        className="w-[600px] h-[200px]  object-contain cursor-pointer"
         onClick={() => navigate("/home")}
       />
     </div>
