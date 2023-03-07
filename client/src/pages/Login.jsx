@@ -7,8 +7,20 @@ import styles from "../styles";
 
 const Home = () => {
   const [playerName, setPlayerName] = useState("");
+  const [playerPassword, setPlayerPassword] = useState("");
   const navigate = useNavigate();
 
+  const handleNameChange = (event) => {
+    setPlayerName(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPlayerPassword(event.target.value);
+  };
+
+  const handleLogin = () => {
+    // Handle login logic here
+  };
   return (
     <>
       <div>
@@ -16,21 +28,34 @@ const Home = () => {
           Connect to join the Rift!
         </p>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-6">
         <input
           Label="Name"
           placeholder="Enter your summoner name"
           value={playerName}
           className={styles.input}
+          type="text"
+          onChange={handleNameChange}
+          required
+        />
+        <input
+          Label="Password"
+          placeholder="Enter your password"
+          value={playerPassword}
+          className={styles.input}
+          type="password"
+          onChange={handlePasswordChange}
+          required
         />
         <div className="py-4 flex">
           <button
-            title="Register"
+            title="Login"
             className={
               "px-4 py-2 rounded-lg bg-red-600 w-fit text-white font-rajdhani font-bold"
             }
+            onClick={handleLogin}
           >
-            Register
+            Login
           </button>
         </div>
       </div>
