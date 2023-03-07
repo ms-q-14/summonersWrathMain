@@ -8,6 +8,7 @@ import styles from "../styles";
 const Home = () => {
   const [playerName, setPlayerName] = useState("");
   const [playerPassword, setPlayerPassword] = useState("");
+  const [isReigstering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
 
   const handleNameChange = (event) => {
@@ -57,6 +58,12 @@ const Home = () => {
           >
             Login
           </button>
+        </div>
+        <div
+          className={` ${styles.normalText} text-red-600 my-7 flex cursor-pointer hover:underline`}
+          onClick={() => setIsRegistering(true)}
+        >
+          Register an account
         </div>
       </div>
     </>
