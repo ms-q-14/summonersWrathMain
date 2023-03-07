@@ -21,6 +21,7 @@ const PageHOC = (Componenet, title, description) => () => {
           <div className="flex flex-row w-full">
             <h1 className={`flex ${styles.headText} head-text `}>{title}</h1>
           </div>
+          <br />
           <p className={`${styles.normalText} my-10`}>{description}</p>
           <Componenet />
         </div>
