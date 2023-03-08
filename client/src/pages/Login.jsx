@@ -5,10 +5,10 @@ import { PageHOC } from "../components";
 import { useNavigate } from "react-router-dom";
 import styles from "../styles";
 
-const Home = () => {
+const Login = () => {
   const [playerName, setPlayerName] = useState("");
   const [playerPassword, setPlayerPassword] = useState("");
-  const [isReigstering, setIsRegistering] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleNameChange = (event) => {
@@ -20,16 +20,20 @@ const Home = () => {
   };
 
   const handleLogin = () => {
-    // Handle login logic here
+    if (!playerName || !playerPassword) {
+      setErrorMessage("Please fill in all fields.");
+    } else {
+      console.log("Successfully Logged In!");
+    }
   };
   return (
     <>
       <div>
         <p className={` ${styles.normalText} my-7 flex`}>
-          Connect to join the Rift!
+          Welcome back to the Rift!
         </p>
       </div>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-3">
         <input
           Label="Name"
           placeholder="Enter your summoner name"
@@ -48,6 +52,9 @@ const Home = () => {
           onChange={handlePasswordChange}
           required
         />
+        {errorMessage && (
+          <div className="text-red-600 flex">{errorMessage}</div>
+        )}
         <div className="py-4 flex">
           <button
             title="Login"
@@ -61,7 +68,7 @@ const Home = () => {
         </div>
         <div
           className={` ${styles.normalText} text-red-600 my-7 flex cursor-pointer hover:underline`}
-          onClick={() => setIsRegistering(true)}
+          onClick={() => navigate("/register")}
         >
           Register an account
         </div>
@@ -70,9 +77,4 @@ const Home = () => {
   );
 };
 
-export default PageHOC(
-  Home,
-  <>
-    Welcome to the Summoners Wrath! <br />A monster summoning Card Game
-  </>
-);
+export default PageHOC(Login, <>Welcome to the Summoners Wrath!</>);

@@ -1,6 +1,13 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import { Deck, DivineIntervention, Home, Login, Packs } from "./pages";
+import {
+  Deck,
+  DivineIntervention,
+  Home,
+  Login,
+  Packs,
+  Register,
+} from "./pages";
 import { Footer, Navbar } from "./components";
 import "./index.css";
 
@@ -24,6 +31,7 @@ const router = createBrowserRouter([
       { path: "/packs", element: <Packs /> },
       { path: "/deck", element: <Deck /> },
       { path: "/divine-intervention", element: <DivineIntervention /> },
+      { path: "/register", element: <Register /> },
     ],
   },
 ]);
