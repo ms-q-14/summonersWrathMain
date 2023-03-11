@@ -60,6 +60,14 @@ app.post("/register", async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    const existingWallet = await User.findOne({ walletAddress });
+
+    if (existingWallet) {
+      return res
+        .status(400)
+        .json({ message: "Wallet already registered with another account" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
       username,

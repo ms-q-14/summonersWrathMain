@@ -9,6 +9,7 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   const handleNameChange = (event) => {
@@ -21,6 +22,12 @@ const Register = () => {
 
   const handleConfirmPasswordChange = (event) => {
     setConfirmPassword(event.target.value);
+  };
+
+  const data = {
+    playerName: playerName,
+    playerPassword: playerPassword,
+    walletAddress: walletAddress,
   };
 
   const handleWalletAddressChange = async () => {
@@ -41,14 +48,16 @@ const Register = () => {
     }
   };
 
-  const handleRegister = () => {
+  const handleRegister = (event) => {
+    event.preventDefault();
     if (!playerName || !playerPassword || !confirmPassword || !walletAddress) {
       setErrorMessage("Please fill in all fields.");
     } else if (playerPassword !== confirmPassword) {
       setErrorMessage("Passwords do not match.");
     } else {
       //Add in API call to register user
-      console.log("Successfully Registered!");
+      console.log("Successfully Registered!", data);
+      setSuccessMessage("Successfully Registered!");
     }
   };
 
@@ -59,7 +68,27 @@ const Register = () => {
           Create your summoner!
         </p>
       </div>
-      <div className="flex flex-col gap-3">
+      <form className="flex flex-col gap-3" onSubmit={handleRegister}>
+        <div className="flex flex-row gap-3 ">
+          <input
+            label="Wallet Address"
+            placeholder="Click button to add wallet address"
+            value={walletAddress}
+            className={`${styles.input} w-full`}
+            type="text"
+            onChange={handleWalletAddressChange}
+            required
+            disabled
+          />
+
+          <button
+            className="px-4 py-2 rounded-lg bg-red-600 w-fit text-white font-rajdhani font-bold"
+            onClick={handleWalletAddressChange}
+          >
+            Connect Wallet
+          </button>
+        </div>
+
         <input
           label="Name"
           placeholder="Create your summoner name"
@@ -87,28 +116,12 @@ const Register = () => {
           onChange={handleConfirmPasswordChange}
           required
         />
-        <div className="flex flex-row gap-3 ">
-          <input
-            label="Wallet Address"
-            placeholder="Click button to add wallet address"
-            value={walletAddress}
-            className={`${styles.input} w-full`}
-            type="text"
-            onChange={handleWalletAddressChange}
-            required
-            disabled
-          />
-
-          <button
-            className="px-4 py-2 rounded-lg bg-red-600 w-fit text-white font-rajdhani font-bold"
-            onClick={handleWalletAddressChange}
-          >
-            Connect Wallet
-          </button>
-        </div>
 
         {errorMessage && (
           <div className="text-red-600 my-2 flex">{errorMessage}</div>
+        )}
+        {successMessage && (
+          <div className="text-green-600 my-2 flex">{successMessage}</div>
         )}
         <div className="py-4 flex">
           <button
@@ -116,7 +129,7 @@ const Register = () => {
             className={
               "px-4 py-2 rounded-lg bg-red-600 w-fit text-white font-rajdhani font-bold"
             }
-            onClick={handleRegister}
+            type="submit"
           >
             Register
           </button>
@@ -127,7 +140,7 @@ const Register = () => {
         >
           Already have an account? Login here
         </div>
-      </div>
+      </form>
     </>
   );
 };
