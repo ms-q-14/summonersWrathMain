@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { PageHOC } from "../components";
 import { useNavigate } from "react-router-dom";
 import styles from "../styles";
+import axios from "axios";
 
 const Register = () => {
   const [playerName, setPlayerName] = useState("");
@@ -10,6 +11,11 @@ const Register = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const data = {
+    username: playerName,
+    password: playerPassword,
+    walletAddress: walletAddress,
+  };
   const navigate = useNavigate();
 
   const handleNameChange = (event) => {
@@ -22,12 +28,6 @@ const Register = () => {
 
   const handleConfirmPasswordChange = (event) => {
     setConfirmPassword(event.target.value);
-  };
-
-  const data = {
-    playerName: playerName,
-    playerPassword: playerPassword,
-    walletAddress: walletAddress,
   };
 
   const handleWalletAddressChange = async () => {
@@ -50,14 +50,22 @@ const Register = () => {
 
   const handleRegister = (event) => {
     event.preventDefault();
+
     if (!playerName || !playerPassword || !confirmPassword || !walletAddress) {
       setErrorMessage("Please fill in all fields.");
     } else if (playerPassword !== confirmPassword) {
       setErrorMessage("Passwords do not match.");
     } else {
-      //Add in API call to register user
-      console.log("Successfully Registered!", data);
-      setSuccessMessage("Successfully Registered!");
+      try {
+        axios.post("http://localhost:3000/register", data).then((res) => {
+          console.log(res);
+          console.log(res.data);
+        });
+        console.log("Successfully Registered!", data);
+        setSuccessMessage("Successfully Registered!");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
