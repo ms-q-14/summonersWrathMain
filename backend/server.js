@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("./models/user");
 const dotenv = require("dotenv");
+const cors = require("cors");
 
 mongoose.set("strictQuery", true);
 dotenv.config();
@@ -18,6 +19,7 @@ mongoose
   .catch((err) => console.error(err));
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -38,7 +40,7 @@ app.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, "mysecretkey");
-    res.json({ token });
+    res.json({ username: user.username, token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -47,12 +49,6 @@ app.post("/login", async (req, res) => {
 app.post("/register", async (req, res) => {
   try {
     const { username, password, walletAddress } = req.body;
-
-    if (!username || !password || !walletAddress) {
-      return res.status(400).json({
-        message: "Username, password, and wallet address are required",
-      });
-    }
 
     const existingUser = await User.findOne({ username });
 
@@ -65,10 +61,16 @@ app.post("/register", async (req, res) => {
     if (existingWallet) {
       return res
         .status(400)
-        .json({ message: "Wallet already registered with another account" });
+        .json({ message: "Wallet is already registered with another account" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    if (!password || typeof password !== "string") {
+      return res.status(400).json({ message: "Invalid password" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const user = new User({
       username,
       password: hashedPassword,
