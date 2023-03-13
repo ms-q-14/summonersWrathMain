@@ -5,6 +5,8 @@ import eoaalien from "./background/eoaalien.jpg";
 import panight from "./background/panight.jpg";
 import heroImg from "./background/hero-img.jpg";
 import footerNight from "./background/footerNight.jpg";
+import home from "./background/home.png";
+import homeBackground from "./background/homeBackground.jpg";
 
 // logo
 import summonerLogo from "./summonerLogo.png";
@@ -12,7 +14,7 @@ import summonerLogo from "./summonerLogo.png";
 // icon
 
 import mana from "./mana.png";
-
+import riftShard from "./riftShard.png";
 // players
 import player01 from "./player01.png";
 import player02 from "./player02.png";
@@ -32,6 +34,9 @@ export {
   summonerLogo,
   heroImg,
   footerNight,
+  home,
+  homeBackground,
+  riftShard,
 };
 
 export const battlegrounds = [

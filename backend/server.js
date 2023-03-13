@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 // User Login and Registration
 app.post("/login", async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, walletAddress } = req.body;
     const user = await User.findOne({ username });
 
     if (!user) {
@@ -39,8 +39,12 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid password" });
     }
 
+    if (user.walletAddress !== walletAddress) {
+      return res.status(401).json({ message: "Invalid wallet address" });
+    }
+
     const token = jwt.sign({ userId: user._id }, "mysecretkey");
-    res.json({ username: user.username, token });
+    res.json({ username: user.username, shards: user.shards, token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -79,6 +83,57 @@ app.post("/register", async (req, res) => {
 
     await user.save();
     res.json({ message: "User registered successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Update user's currency
+app.post("/currency", async (req, res) => {
+  try {
+    const { username, amount } = req.body;
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Add amount to user's current currency
+    user.currency += amount;
+    await user.save();
+
+    res.json({
+      message: "Currency updated successfully",
+      currency: user.currency,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Update user's currency by subtracting amount
+app.post("/currency/subtract", async (req, res) => {
+  try {
+    const { username, amount } = req.body;
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if user has enough currency to subtract
+    if (user.currency < amount) {
+      return res.status(400).json({ message: "Not enough currency" });
+    }
+
+    // Subtract amount from user's current currency
+    user.currency -= amount;
+    await user.save();
+
+    res.json({
+      message: "Currency updated successfully",
+      currency: user.currency,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

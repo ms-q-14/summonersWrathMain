@@ -92,6 +92,7 @@ const Register = () => {
           <button
             className="px-4 py-2 rounded-lg bg-red-600 w-fit text-white font-rajdhani font-bold"
             onClick={handleWalletAddressChange}
+            type="button"
           >
             Connect Wallet
           </button>
