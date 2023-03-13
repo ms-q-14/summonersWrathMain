@@ -15,6 +15,7 @@ import summonerLogo from "./summonerLogo.png";
 
 import mana from "./mana.png";
 import riftShard from "./riftShard.png";
+import rank from "./rank.png";
 // players
 import player01 from "./player01.png";
 import player02 from "./player02.png";
@@ -37,6 +38,7 @@ export {
   home,
   homeBackground,
   riftShard,
+  rank,
 };
 
 export const battlegrounds = [
