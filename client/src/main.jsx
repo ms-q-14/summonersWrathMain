@@ -12,6 +12,8 @@ import {
   Login,
   Packs,
   Register,
+  BattleArena,
+  Inventory,
 } from "./pages";
 
 // This is the chain your dApp will work on.
@@ -30,6 +32,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="/divine-intervention" element={<DivineIntervention />} />
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/battle" element={<BattleArena />} />
+          <Route path="/inventory" element={<Inventory />} />
         </Routes>
       </BrowserRouter>
     </ThirdwebProvider>

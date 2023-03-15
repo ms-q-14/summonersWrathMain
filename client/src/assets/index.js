@@ -16,6 +16,9 @@ import summonerLogo from "./summonerLogo.png";
 import mana from "./mana.png";
 import riftShard from "./riftShard.png";
 import rank from "./rank.png";
+import inventory from "./inventory.png";
+import battleArena from "./battleArena.png";
+import store from "./store.png";
 // players
 import player01 from "./player01.png";
 import player02 from "./player02.png";
@@ -24,6 +27,9 @@ import player02 from "./player02.png";
 import attackSound from "./sounds/attack.wav";
 import defenseSound from "./sounds/defense.mp3";
 import explosion from "./sounds/explosion.mp3";
+import battleArenaSound from "./sounds/battleArenaSound.mp3";
+import inventorySound from "./sounds/inventorySound.mp3";
+import shopSound from "./sounds/shopSound.mp3";
 
 export {
   player01,
@@ -39,6 +45,12 @@ export {
   homeBackground,
   riftShard,
   rank,
+  inventory,
+  battleArena,
+  store,
+  battleArenaSound,
+  inventorySound,
+  shopSound,
 };
 
 export const battlegrounds = [

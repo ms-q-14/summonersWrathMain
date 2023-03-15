@@ -1,9 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { home, player01, riftShard, rank } from "../assets";
+import {
+  home,
+  player01,
+  riftShard,
+  rank,
+  inventory,
+  battleArena,
+  store,
+  battleArenaSound,
+  inventorySound,
+  shopSound,
+} from "../assets";
+
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [username, setUsername] = useState("");
   const [shards, setShards] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
@@ -18,6 +32,21 @@ const Home = () => {
     }
   }, []);
 
+  const handleBattleArenaSound = () => {
+    const audio = new Audio(battleArenaSound);
+    audio.play();
+  };
+
+  const handleInventorySound = () => {
+    const audio = new Audio(inventorySound);
+    audio.play();
+  };
+
+  const handleShopSound = () => {
+    const audio = new Audio(shopSound);
+    audio.play();
+  };
+
   return (
     <div className="relative">
       <img
@@ -25,20 +54,55 @@ const Home = () => {
         className="w-[100vw] h-[100vh] object-cover object-center z-[-1]"
       />
       <div className="flex justify-end items-start my-[30px] mx-[30px] absolute inset-0">
-        <div className="flex flex-row border-solid border-2 rounded-md border-black p-4 gap-[40px]  backdrop-blur-lg bg-opacity-50">
+        <div className="flex flex-row border-solid border-2 rounded-md border-black p-4 gap-[40px] bg-black bg-opacity-50 ">
           <img
             src={player01}
-            className="w-[80px] rounded-[100px] border-solid border-2 border-white"
+            className="w-[80px] rounded-[100px] border-solid border-2 border-siteWhite"
           />
-          <div className="flex justify-around text-white font-medium flex-col">
+          <div className="flex justify-around font-rajdhani font-normal text-[24px] text-siteWhite flex-col">
             <h1>{username}</h1>
             <div className="flex flex-row items-center">
-              <img src={riftShard} className="w-[40px]" />
+              <img src={riftShard} className="w-[50px]" />
               <h1>{shards}</h1>
             </div>
           </div>
           <img src={rank} className="w-[80px]" />
         </div>
+      </div>
+
+      <div className="absolute inset-0 flex justify-around items-center mt-[160px]">
+        <div className="flex flex-col">
+          <img
+            src={battleArena}
+            className="w-[450px] hover:animate-bounce cursor-pointer"
+            onClick={() => navigate("/battle")}
+            onMouseEnter={handleBattleArenaSound}
+          />
+          <h1 className="font-rajdhani font-bold text-white text-3xl">
+            Battle Arena
+          </h1>
+        </div>
+        <div>
+          <img
+            src={inventory}
+            className="w-[300px] hover:animate-bounce cursor-pointer"
+            onClick={() => navigate("/inventory")}
+            onMouseEnter={handleInventorySound}
+          />
+          <h1 className="font-rajdhani font-bold text-white text-3xl">
+            Inventory
+          </h1>
+        </div>
+        <div>
+          <img
+            src={store}
+            className="w-[300px] hover:animate-bounce cursor-pointer"
+            onClick={() => navigate("/packs")}
+            onMouseEnter={handleShopSound}
+          />
+          <h1 className="font-rajdhani font-bold text-white text-3xl">Store</h1>
+        </div>
+        {/* sound effect for store https://www.youtube.com/watch?v=UVqPDF0VFCE */}
       </div>
     </div>
   );
