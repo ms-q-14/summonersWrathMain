@@ -8,9 +8,11 @@ import footerNight from "./background/footerNight.jpg";
 import home from "./background/home.png";
 import homeBackground from "./background/homeBackground.jpg";
 import inventoryBG from "./background/inventoryBG.png";
+import packsShop from "./background/packsShop.jpg";
 
 // logo
 import summonerLogo from "./summonerLogo.png";
+import logo from "./logo.png";
 
 // icon
 
@@ -53,6 +55,8 @@ export {
   inventorySound,
   shopSound,
   inventoryBG,
+  packsShop,
+  logo,
 };
 
 export const battlegrounds = [

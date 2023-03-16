@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { inventoryBG, player01, riftShard, rank } from "../assets";
-
+import { inventoryBG, player01, riftShard, rank, logo } from "../assets";
 import { useNavigate } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 const Inventory = () => {
   const [username, setUsername] = useState("");
@@ -28,7 +29,18 @@ const Inventory = () => {
         className="w-[100vw] h-[100vh] object-cover object-center z-[-1]"
       />
       {/* Player Card */}
-      <div className="flex justify-end items-start my-[30px] mx-[30px] absolute inset-0">
+      <div className="flex justify-between items-start my-[30px] mx-[30px] absolute inset-0">
+        <img
+          src={logo}
+          className="w-[140px] cursor-pointer"
+          onClick={() => navigate("/home")}
+          data-tooltip-id="home"
+          data-tooltip-content="Home"
+          data-tooltip-place="right"
+        />
+
+        <Tooltip id="home" />
+
         <div className="flex flex-col gap-[40px]">
           <div className="flex flex-row border-solid border-2 rounded-md border-black p-4 gap-[40px] bg-black bg-opacity-50 ">
             <img
@@ -37,12 +49,25 @@ const Inventory = () => {
             />
             <div className="flex justify-around font-rajdhani font-normal text-[24px] text-siteWhite flex-col">
               <h1>{username}</h1>
-              <div className="flex flex-row items-center">
+              <div
+                className="flex flex-row items-center"
+                data-tooltip-id="shards"
+                data-tooltip-content={`Rift Shards : ${shards}`}
+                data-tooltip-place="bottom"
+              >
+                <Tooltip id="shards" />
                 <img src={riftShard} className="w-[50px]" />
                 <h1>{shards}</h1>
               </div>
             </div>
-            <img src={rank} className="w-[80px]" />
+            <img
+              src={rank}
+              className="w-[80px]"
+              data-tooltip-id="rank"
+              data-tooltip-content="Rank: Masters Division 1"
+              data-tooltip-place="bottom"
+            />
+            <Tooltip id="rank" />
           </div>
 
           <div className="grid grid-cols-3 gap-4 flex flex-row absolute inset-0 mt-[150px] mb-[150px]">

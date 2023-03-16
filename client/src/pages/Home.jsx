@@ -13,6 +13,8 @@ import {
 } from "../assets";
 
 import { useNavigate } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 const Home = () => {
   const [username, setUsername] = useState("");
@@ -61,12 +63,25 @@ const Home = () => {
           />
           <div className="flex justify-around font-rajdhani font-normal text-[24px] text-siteWhite flex-col">
             <h1>{username}</h1>
-            <div className="flex flex-row items-center">
+            <div
+              className="flex flex-row items-center"
+              data-tooltip-id="shards"
+              data-tooltip-content={`Rift Shards : ${shards}`}
+              data-tooltip-place="bottom"
+            >
+              <Tooltip id="shards" />
               <img src={riftShard} className="w-[50px]" />
               <h1>{shards}</h1>
             </div>
           </div>
-          <img src={rank} className="w-[80px]" />
+          <img
+            src={rank}
+            className="w-[80px]"
+            data-tooltip-id="rank"
+            data-tooltip-content="Rank: Masters Division 1"
+            data-tooltip-place="bottom"
+          />
+          <Tooltip id="rank" />
         </div>
       </div>
 
