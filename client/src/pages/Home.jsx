@@ -102,7 +102,6 @@ const Home = () => {
           />
           <h1 className="font-rajdhani font-bold text-white text-3xl">Store</h1>
         </div>
-        {/* sound effect for store https://www.youtube.com/watch?v=UVqPDF0VFCE */}
       </div>
     </div>
   );

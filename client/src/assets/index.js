@@ -7,6 +7,7 @@ import heroImg from "./background/hero-img.jpg";
 import footerNight from "./background/footerNight.jpg";
 import home from "./background/home.png";
 import homeBackground from "./background/homeBackground.jpg";
+import inventoryBG from "./background/inventoryBG.png";
 
 // logo
 import summonerLogo from "./summonerLogo.png";
@@ -51,6 +52,7 @@ export {
   battleArenaSound,
   inventorySound,
   shopSound,
+  inventoryBG,
 };
 
 export const battlegrounds = [
