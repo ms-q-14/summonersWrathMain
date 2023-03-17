@@ -1,7 +1,7 @@
 import React from "react";
 import NFTCard from "./NFTCard";
 
-const CardContainer = ({ cards }) => {
+const CardContainer = ({ cards, onCardDoubleClick }) => {
   const sortedCards = [...cards].sort((a, b) =>
     a.meta.name.localeCompare(b.meta.name)
   );
@@ -11,7 +11,7 @@ const CardContainer = ({ cards }) => {
       {sortedCards.map((card, index) => {
         return (
           <div key={index} className="w-full md:w-1/4 p-4">
-            <NFTCard card={card} />
+            <NFTCard card={card} onDoubleClick={onCardDoubleClick} />
           </div>
         );
       })}

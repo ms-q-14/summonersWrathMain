@@ -5,13 +5,15 @@ import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import { UserContext } from "../context/UserProvider";
 import axios from "axios";
-import { CardContainer } from "../components";
+import { CardContainer, DeckContainer } from "../components";
 
 const Inventory = () => {
   const { walletAddress } = useContext(UserContext);
   const [username, setUsername] = useState("");
   const [shards, setShards] = useState(0);
   const [cards, setCards] = useState([]);
+  const [deck, setDeck] = useState([]);
+  const [counter, setCounter] = useState(0);
   const navigate = useNavigate();
   console.log(walletAddress);
 
@@ -29,6 +31,20 @@ const Inventory = () => {
 
     getNFTCards();
   }, []);
+
+  const handleCardDoubleClick = (card) => {
+    if (counter < 30) {
+      setDeck([...deck, card]);
+      setCards(cards.filter((c) => c.id !== card.id));
+      setCounter(counter + 1);
+    } else alert("Your Deck is full! Replace a card to add a new one.");
+  };
+
+  const handleDeckDoubleClick = (card) => {
+    setCards([...cards, card]);
+    setDeck(deck.filter((c) => c.id !== card.id));
+    setCounter(counter - 1);
+  };
 
   const getNFTCards = async () => {
     try {
@@ -109,7 +125,10 @@ const Inventory = () => {
                 Inventory
               </h1>
               <div className="flex flex-row flex-wrap overflow-y-auto">
-                <CardContainer cards={cards} />
+                <CardContainer
+                  cards={cards}
+                  onCardDoubleClick={handleCardDoubleClick}
+                />
               </div>
             </div>
             {/* Deck */}
@@ -119,10 +138,16 @@ const Inventory = () => {
                   Deck
                 </h1>
                 <div className="flex flex-row flex-wrap  overflow-y-auto">
-                  <h1>Deck Here</h1>
+                  <DeckContainer
+                    deckCards={deck}
+                    onDeckDoubleClick={handleDeckDoubleClick}
+                  />
                 </div>
               </div>
-              <div className="flex justify-center">
+              <div className="flex justify-between">
+                <h1 className="flex justify-end font-rajdhani font-normal text-[34px] text-White">
+                  {counter}/30
+                </h1>
                 <button
                   className="px-4 py-2 rounded-lg bg-red-600 w-fit text-white font-rajdhani items-end"
                   type="button"

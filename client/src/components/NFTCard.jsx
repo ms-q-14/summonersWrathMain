@@ -1,9 +1,9 @@
 import React from "react";
 import Tilt from "react-tilt";
 
-const NFTCard = ({ card }) => {
+const NFTCard = ({ card, onDoubleClick }) => {
   return (
-    <div>
+    <div onDoubleClick={() => onDoubleClick(card)}>
       <Tilt>
         {card.meta.content[0] && (
           <img className="flex justify-center" src={card.meta.content[0].url} />
