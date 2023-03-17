@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 import { PageHOC } from "../components";
 
 import { useNavigate } from "react-router-dom";
 import styles from "../styles";
 import axios from "axios";
+import { UserContext } from "../context/UserProvider";
 
 const Login = () => {
   const [playerName, setPlayerName] = useState("");
@@ -17,6 +18,7 @@ const Login = () => {
     password: playerPassword,
     walletAddress: walletAddress,
   };
+  const { setUserWalletAddress } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleNameChange = (event) => {
@@ -58,6 +60,7 @@ const Login = () => {
           } else if (res.data.message === "User not found") {
             setErrorMessage("Incorrect username or password.");
           } else {
+            setUserWalletAddress(walletAddress);
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("username", res.data.username);
             localStorage.setItem("shards", res.data.shards);

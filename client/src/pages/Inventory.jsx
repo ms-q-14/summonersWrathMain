@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { inventoryBG, player01, riftShard, rank, logo } from "../assets";
 import { useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import { UserContext } from "../context/UserProvider";
+import axios from "axios";
 
 const Inventory = () => {
+  const { walletAddress } = useContext(UserContext);
   const [username, setUsername] = useState("");
   const [shards, setShards] = useState(0);
   const navigate = useNavigate();
+  console.log(walletAddress);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
@@ -21,6 +25,22 @@ const Inventory = () => {
       setShards(parseInt(storedShards));
     }
   }, []);
+
+  const getNFTCards = async () => {
+    try {
+      const response = await axios.get(
+        `https://testnet-api.rarible.org/v0.1/items/byOwner/?owner=ETHEREUM:${walletAddress}`
+      );
+      const data = response.data;
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getNFTCards();
+  }, [walletAddress]);
 
   return (
     <div className="relative">
@@ -78,7 +98,7 @@ const Inventory = () => {
                 Inventory
               </h1>
               <div className="flex flex-row flex-wrap overflow-y-auto">
-                {/* Render Inventory here */}
+                <h1>Inventory Here</h1>
               </div>
             </div>
             {/* Deck */}
@@ -88,7 +108,7 @@ const Inventory = () => {
                   Deck
                 </h1>
                 <div className="flex flex-row flex-wrap  overflow-y-auto">
-                  {/* Render Deck here */}
+                  <h1>Deck Here</h1>
                 </div>
               </div>
               <div className="flex justify-center">

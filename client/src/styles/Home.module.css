@@ -69,8 +69,8 @@
 }
 
 .divider {
-  width: 50%;
-  border-color: grey;
+  width: 100%;
+  border-color: white;
   opacity: 0.25;
 }
 

@@ -14,9 +14,26 @@ import ERC1155RewardBox from "../components/ERC1155RewardBox";
 import styles from "../styles/Home.module.css";
 
 const DivineIntervention = () => {
-  const address = useAddress();
-  const disconnectWallet = useDisconnect();
-  const connectWithMetamask = useMetamask();
+  const [walletAddress, setWalletAddress] = React.useState();
+  const [errorMessage, setErrorMessage] = React.useState();
+
+  const connectWallet = async () => {
+    if (typeof window.ethereum === "undefined") {
+      setErrorMessage("Please install MetaMask to connect your wallet.");
+      return;
+    }
+
+    try {
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      console.log(accounts);
+      setWalletAddress(accounts[0]);
+    } catch (error) {
+      setErrorMessage("Failed to connect to your wallet.");
+      console.error(error);
+    }
+  };
 
   const { contract: pack } = useContract(
     "0x2D08774E4F96aa690656f6CE39F4a1D13D2F1d2b",
@@ -24,7 +41,7 @@ const DivineIntervention = () => {
   );
 
   // @ts-ignore
-  const { data: nfts, isLoading } = useOwnedNFTs(pack, address);
+  const { data: nfts, isLoading } = useOwnedNFTs(pack, walletAddress);
 
   console.log("Packs", pack);
   console.log("NFTs", nfts);
@@ -33,12 +50,8 @@ const DivineIntervention = () => {
 
   return (
     <div>
-      {address ? (
+      {walletAddress ? (
         <>
-          <>
-            <button onClick={disconnectWallet}>Disconnect Wallet</button>
-            <p>Your address: {address}</p>
-          </>
           <div className={styles.container} style={{ marginTop: 0 }}>
             <div className={styles.collectionContainer}>
               {!isLoading ? (
@@ -91,7 +104,16 @@ const DivineIntervention = () => {
           </div>
         </>
       ) : (
-        <button onClick={connectWithMetamask}>Connect with Metamask</button>
+        <div className="flex h-[100vh] w-[100vw] items-center justify-center">
+          <div>
+            <button
+              onClick={connectWallet}
+              className="px-4 py-2 rounded-lg bg-red-600 text-white font-rajdhani font-bold"
+            >
+              Connect Wallet
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
