@@ -5,11 +5,13 @@ import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import { UserContext } from "../context/UserProvider";
 import axios from "axios";
+import { CardContainer } from "../components";
 
 const Inventory = () => {
   const { walletAddress } = useContext(UserContext);
   const [username, setUsername] = useState("");
   const [shards, setShards] = useState(0);
+  const [cards, setCards] = useState([]);
   const navigate = useNavigate();
   console.log(walletAddress);
 
@@ -24,6 +26,8 @@ const Inventory = () => {
     if (storedShards) {
       setShards(parseInt(storedShards));
     }
+
+    getNFTCards();
   }, []);
 
   const getNFTCards = async () => {
@@ -31,8 +35,11 @@ const Inventory = () => {
       const response = await axios.get(
         `https://testnet-api.rarible.org/v0.1/items/byOwner/?owner=ETHEREUM:${walletAddress}`
       );
+      //https://www.youtube.com/watch?v=gJG6x8jUeRg
+      // Api for mainnet
+      // https://api.rarible.org/v0.1/items/byOwner?owner=ETHEREUM:${walletAddress}
       const data = response.data;
-      console.log(data);
+      setCards(data.items);
     } catch (error) {
       console.error(error);
     }
@@ -41,6 +48,10 @@ const Inventory = () => {
   useEffect(() => {
     getNFTCards();
   }, [walletAddress]);
+
+  useEffect(() => {
+    console.log(cards);
+  }, [cards]);
 
   return (
     <div className="relative">
@@ -98,7 +109,7 @@ const Inventory = () => {
                 Inventory
               </h1>
               <div className="flex flex-row flex-wrap overflow-y-auto">
-                <h1>Inventory Here</h1>
+                <CardContainer cards={cards} />
               </div>
             </div>
             {/* Deck */}
