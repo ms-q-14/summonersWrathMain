@@ -57,8 +57,8 @@ const Inventory = () => {
   };
 
   const handleDeckDoubleClick = (summon) => {
-    const selectedCard = deck.find((card) => card.id === summon.id);
-    setDeck((prevDeck) => prevDeck.filter((card) => card.id !== summon.id));
+    const selectedCard = deck.find((card) => card._id === summon._id);
+    setDeck((prevDeck) => prevDeck.filter((card) => card._id !== summon._id));
     setCards([...cards, selectedCard]);
 
     setCounter(counter - 1);
@@ -90,9 +90,7 @@ const Inventory = () => {
         `http://localhost:3000/deck?username=${username}`
       );
       const data = response.data;
-      const deckWithIds = data.map((card) => ({ ...card, id: nanoid() }));
-      setDeck(deckWithIds);
-
+      setDeck(data);
       setCounter(data.length);
     } catch (error) {
       console.error(error);
