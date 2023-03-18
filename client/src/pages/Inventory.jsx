@@ -51,13 +51,16 @@ const Inventory = () => {
         prevCards.filter((card) => card.id !== summon.id)
       );
       setDeck([...deck, selectedCard]);
+
       setCounter(counter + 1);
     }
   };
 
-  const handleDeckDoubleClick = (card) => {
-    setCards([...cards, card]);
-    setDeck(deck.filter((c) => c.id !== card.id));
+  const handleDeckDoubleClick = (summon) => {
+    const selectedCard = deck.find((card) => card.id === summon.id);
+    setDeck((prevDeck) => prevDeck.filter((card) => card.id !== summon.id));
+    setCards([...cards, selectedCard]);
+
     setCounter(counter - 1);
   };
 
@@ -65,10 +68,7 @@ const Inventory = () => {
     try {
       axios
         .patch("http://localhost:3000/deck", {
-          cards: deck.map((card) => ({
-            image: card.image,
-            name: card.name,
-          })),
+          cards: deck,
           username: username,
         })
         .then((res) => {
@@ -82,6 +82,21 @@ const Inventory = () => {
     }
 
     console.log("Saved deck: ", deck);
+  };
+
+  const getDeck = async (username) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/deck?username=${username}`
+      );
+      const data = response.data;
+      const deckWithIds = data.map((card) => ({ ...card, id: nanoid() }));
+      setDeck(deckWithIds);
+
+      setCounter(data.length);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const getNFTCards = async () => {
@@ -109,6 +124,10 @@ const Inventory = () => {
   useEffect(() => {
     getNFTCards();
   }, [walletAddress]);
+
+  useEffect(() => {
+    getDeck(username);
+  }, [username]);
 
   return (
     <div className="relative">
