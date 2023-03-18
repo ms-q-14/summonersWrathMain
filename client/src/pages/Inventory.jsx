@@ -47,9 +47,7 @@ const Inventory = () => {
   const handleCardDoubleClick = (summon) => {
     if (counter < 30) {
       const selectedCard = cards.find((card) => card.id === summon.id);
-      setCards((prevCards) =>
-        prevCards.filter((card) => card.id !== summon.id)
-      );
+      setCards(cards.filter((card) => card.id !== summon.id));
       setDeck([...deck, selectedCard]);
 
       setCounter(counter + 1);
@@ -58,7 +56,7 @@ const Inventory = () => {
 
   const handleDeckDoubleClick = (summon) => {
     const selectedCard = deck.find((card) => card._id === summon._id);
-    setDeck((prevDeck) => prevDeck.filter((card) => card._id !== summon._id));
+    setDeck(deck.filter((card) => card._id !== summon._id));
     setCards([...cards, selectedCard]);
 
     setCounter(counter - 1);
