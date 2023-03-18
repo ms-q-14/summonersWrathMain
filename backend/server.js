@@ -178,14 +178,21 @@ app.delete("/card/:id", async (req, res) => {
 
 // Saving of Decks using cards on the users account
 
-app.post("/deck", async (req, res) => {
+app.patch("/deck", async (req, res) => {
   try {
-    const { cards } = req.body;
-    const deck = new Deck({
-      cards,
-    });
+    const { cards, username } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    await deck.save();
+    user.deck = cards.map((card) => ({
+      image: card.image,
+      name: card.name,
+    }));
+
+    await user.save();
+
     res.json({ message: "Deck saved successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -194,8 +201,14 @@ app.post("/deck", async (req, res) => {
 
 app.get("/deck", async (req, res) => {
   try {
-    const decks = await Deck.find();
-    res.json(decks);
+    const { username } = req.query;
+    const user = await User.findOne({ username }).populate("deck");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user.deck);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
