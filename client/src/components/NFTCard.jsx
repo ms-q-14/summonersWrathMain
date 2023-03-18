@@ -4,13 +4,13 @@ import Tilt from "react-tilt";
 const NFTCard = ({ card, onDoubleClick }) => {
   return (
     <div onDoubleClick={() => onDoubleClick(card)}>
-      <Tilt>
-        {card.meta.content[0] && (
-          <img className="flex justify-center" src={card.meta.content[0].url} />
-        )}
-      </Tilt>
+      {card?.image && (
+        <Tilt>
+          <img className="flex justify-center" src={card.image} />
+        </Tilt>
+      )}
       <div className="font-rajdhani font-normal text-[20px] truncate text-white">
-        {card.meta.name}
+        {card?.name}
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import "react-tooltip/dist/react-tooltip.css";
 import { UserContext } from "../context/UserProvider";
 import axios from "axios";
 import { CardContainer, DeckContainer } from "../components";
+import { nanoid } from "nanoid";
 
 const Inventory = () => {
   const { walletAddress } = useContext(UserContext);
@@ -14,8 +15,11 @@ const Inventory = () => {
   const [cards, setCards] = useState([]);
   const [deck, setDeck] = useState([]);
   const [counter, setCounter] = useState(0);
+  const newDeck = {
+    cards: deck,
+    username: username,
+  };
   const navigate = useNavigate();
-  console.log(walletAddress);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
@@ -32,12 +36,23 @@ const Inventory = () => {
     getNFTCards();
   }, []);
 
-  const handleCardDoubleClick = (card) => {
+  useEffect(() => {
+    console.log("deck: ", deck);
+  }, [deck]);
+
+  useEffect(() => {
+    console.log("cards: ", cards);
+  }, [cards]);
+
+  const handleCardDoubleClick = (summon) => {
     if (counter < 30) {
-      setDeck([...deck, card]);
-      setCards(cards.filter((c) => c.id !== card.id));
+      const selectedCard = cards.find((card) => card.id === summon.id);
+      setCards((prevCards) =>
+        prevCards.filter((card) => card.id !== summon.id)
+      );
+      setDeck([...deck, selectedCard]);
       setCounter(counter + 1);
-    } else alert("Your Deck is full! Replace a card to add a new one.");
+    }
   };
 
   const handleDeckDoubleClick = (card) => {
@@ -46,16 +61,46 @@ const Inventory = () => {
     setCounter(counter - 1);
   };
 
+  const handleSaveDeck = () => {
+    try {
+      axios
+        .patch("http://localhost:3000/deck", {
+          cards: deck.map((card) => ({
+            image: card.image,
+            name: card.name,
+          })),
+          username: username,
+        })
+        .then((res) => {
+          console.log(res);
+          console.log(res.data);
+        });
+
+      console.log("Saved Deck", deck);
+    } catch (error) {
+      console.error(error.message);
+    }
+
+    console.log("Saved deck: ", deck);
+  };
+
   const getNFTCards = async () => {
     try {
       const response = await axios.get(
         `https://testnet-api.rarible.org/v0.1/items/byOwner/?owner=ETHEREUM:${walletAddress}`
       );
-      //https://www.youtube.com/watch?v=gJG6x8jUeRg
-      // Api for mainnet
-      // https://api.rarible.org/v0.1/items/byOwner?owner=ETHEREUM:${walletAddress}
       const data = response.data;
-      setCards(data.items);
+      const items = data.items;
+
+      // create a new array of objects with 'name' and 'url' properties
+      const newCards = items.map((item) => ({
+        id: nanoid(),
+        name: item.meta.name,
+        image: item.meta.content[0] && item.meta.content[0].url,
+      }));
+
+      // set the state with the new array
+      setCards(newCards);
     } catch (error) {
       console.error(error);
     }
@@ -64,10 +109,6 @@ const Inventory = () => {
   useEffect(() => {
     getNFTCards();
   }, [walletAddress]);
-
-  useEffect(() => {
-    console.log(cards);
-  }, [cards]);
 
   return (
     <div className="relative">
@@ -130,6 +171,10 @@ const Inventory = () => {
                   onCardDoubleClick={handleCardDoubleClick}
                 />
               </div>
+              <h1 className=" py-[30px] font-rajdhani font-normal text-[24px] text-White">
+                Double click on your cards to move them between your deck and
+                inventory
+              </h1>
             </div>
             {/* Deck */}
             <div className="border-solid border-2 rounded-md border-black p-4 gap-[40px] bg-black bg-opacity-50 col-span-1 flex flex-col justify-between">
@@ -145,12 +190,13 @@ const Inventory = () => {
                 </div>
               </div>
               <div className="flex justify-between">
-                <h1 className="flex justify-end font-rajdhani font-normal text-[34px] text-White">
+                <h1 className="font-rajdhani font-normal text-[34px] text-White">
                   {counter}/30
                 </h1>
                 <button
                   className="px-4 py-2 rounded-lg bg-red-600 w-fit text-white font-rajdhani items-end"
                   type="button"
+                  onClick={handleSaveDeck}
                 >
                   Save Deck
                 </button>

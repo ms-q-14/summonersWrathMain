@@ -2,9 +2,7 @@ import React from "react";
 import NFTCard from "./NFTCard";
 
 const CardContainer = ({ cards, onCardDoubleClick }) => {
-  const sortedCards = [...cards].sort((a, b) =>
-    a.meta.name.localeCompare(b.meta.name)
-  );
+  const sortedCards = [...cards].sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className="h-[800px] w-full overflow-y-scroll overflow-x-none flex flex-wrap">
