@@ -187,6 +187,7 @@ app.patch("/deck", async (req, res) => {
     }
 
     user.deck = cards.map((card) => ({
+      id: card.id,
       image: card.image,
       name: card.name,
     }));

@@ -21,6 +21,10 @@ const userSchema = new Schema({
   },
   deck: [
     {
+      id: {
+        type: String,
+        required: true,
+      },
       image: {
         type: String,
         required: true,
