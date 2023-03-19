@@ -33,16 +33,15 @@ const Inventory = () => {
       setShards(parseInt(storedShards));
     }
 
-    getNFTCards();
+    // Call getNFTCards immediately after setting the username state
+    if (storedUsername) {
+      getNFTCards();
+    }
   }, []);
 
   useEffect(() => {
     console.log("deck: ", deck);
-  }, [deck]);
-
-  useEffect(() => {
-    console.log("cards: ", cards);
-  }, [cards]);
+  }, []);
 
   const handleCardDoubleClick = (summon) => {
     if (counter < 30) {
@@ -55,9 +54,9 @@ const Inventory = () => {
   };
 
   const handleDeckDoubleClick = (summon) => {
-    const selectedCard = deck.find((card) => card._id === summon._id);
-    setDeck(deck.filter((card) => card._id !== summon._id));
-    setCards([...cards, selectedCard]);
+    const selectedCard = deck.find((card) => card.id === summon.id);
+    setDeck(deck.filter((card) => card.id !== summon.id));
+    setCards([...cards]);
 
     setCounter(counter - 1);
   };
@@ -95,6 +94,10 @@ const Inventory = () => {
     }
   };
 
+  useEffect(() => {
+    getDeck(username);
+  }, [username]);
+
   const getNFTCards = async () => {
     try {
       const response = await axios.get(
@@ -103,9 +106,10 @@ const Inventory = () => {
       const data = response.data;
       const items = data.items;
 
-      // create a new array of objects with 'name' and 'url' properties
+      // create a new array of objects with 'name' and 'url' properties,
+      // excluding any items that are already in the deck
       const newCards = items.map((item) => ({
-        id: nanoid(),
+        id: item.id,
         name: item.meta.name,
         image: item.meta.content[0] && item.meta.content[0].url,
       }));
@@ -118,12 +122,11 @@ const Inventory = () => {
   };
 
   useEffect(() => {
-    getNFTCards();
+    const fetchData = async () => {
+      await getNFTCards();
+    };
+    fetchData();
   }, [walletAddress]);
-
-  useEffect(() => {
-    getDeck(username);
-  }, [username]);
 
   return (
     <div className="relative">
@@ -183,6 +186,7 @@ const Inventory = () => {
               <div className="flex flex-row flex-wrap overflow-y-auto">
                 <CardContainer
                   cards={cards}
+                  deck={deck}
                   onCardDoubleClick={handleCardDoubleClick}
                 />
               </div>
