@@ -6,6 +6,9 @@ const jwt = require("jsonwebtoken");
 const User = require("./models/user");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const { Server } = require("socket.io");
+const http = require("http");
+const app = express();
 
 mongoose.set("strictQuery", true);
 dotenv.config();
@@ -18,8 +21,10 @@ mongoose
   .then(() => console.log("Database connected!"))
   .catch((err) => console.error(err));
 
-const app = express();
 app.use(cors());
+
+const server = http.createServer(app);
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -139,42 +144,42 @@ app.post("/currency/subtract", async (req, res) => {
   }
 });
 
-// Saving of Cards opened from packs to allow users to make decks without interacting with the contract
+// // Saving of Cards opened from packs to allow users to make decks without interacting with the contract
 
-app.post("/card", async (req, res) => {
-  try {
-    const { name, attack, defense } = req.body;
-    const card = new Card({
-      name,
-      attack,
-      defense,
-    });
+// app.post("/card", async (req, res) => {
+//   try {
+//     const { name, attack, defense } = req.body;
+//     const card = new Card({
+//       name,
+//       attack,
+//       defense,
+//     });
 
-    await card.save();
-    res.json({ message: "Card added to user successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+//     await card.save();
+//     res.json({ message: "Card added to user successfully" });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
 
-app.get("/card", async (req, res) => {
-  try {
-    const cards = await Card.find();
-    res.json(cards);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+// app.get("/card", async (req, res) => {
+//   try {
+//     const cards = await Card.find();
+//     res.json(cards);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
 
-app.delete("/card/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Card.findByIdAndDelete(id);
-    res.json({ message: "Card deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+// app.delete("/card/:id", async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     await Card.findByIdAndDelete(id);
+//     res.json({ message: "Card deleted successfully" });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
 
 // Saving of Decks using cards on the users account
 
@@ -215,6 +220,61 @@ app.get("/deck", async (req, res) => {
   }
 });
 
+//Socket.io server
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log(`User connected ${socket.id}`);
+
+  //creating room
+  socket.on("create_room", (roomName) => {
+    const newRoom = io.sockets.adapter.rooms.get(roomName);
+    if (newRoom) {
+      socket.emit("create_room_error", {
+        message: `Room ${roomName} already exists`,
+      });
+    } else {
+      socket.join(roomName);
+      console.log(`Room ${roomName} created`);
+      socket.emit("create_room_success");
+    }
+  });
+
+  //joining room
+  socket.on("join_room", (data) => {
+    const room = io.sockets.adapter.rooms.get(data);
+    if (room && room.size < 2) {
+      socket.join(data);
+      console.log(`User ${socket.id} joined room ${data}`);
+      socket.emit("join_room_success");
+    } else {
+      socket.emit("join_room_error", {
+        message: "Room does not exist or is full",
+      });
+    }
+  });
+
+  //leaving room
+  socket.on("leave_room", (data) => {
+    socket.disconnect(data);
+  });
+
+  //sending message
+  socket.on("send_message", (data) => {
+    socket.to(data.room).emit("receive_message", data);
+  });
+});
+
 app.listen(3000, () => {
   console.log("Server listening on port 3000");
+});
+
+server.listen(3001, () => {
+  console.log("Socket.io is running on port 3001");
 });
