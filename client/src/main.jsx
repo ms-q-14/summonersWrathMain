@@ -12,6 +12,7 @@ import {
   Register,
   BattleArena,
   Inventory,
+  JoinBattle,
 } from "./pages";
 import { UserProvider } from "./context/UserProvider";
 
@@ -35,6 +36,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/battle" element={<BattleArena />} />
+            <Route path="/join-battle" element={<JoinBattle />} />
             <Route path="/inventory" element={<Inventory />} />
           </Routes>
         </BrowserRouter>

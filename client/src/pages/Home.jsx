@@ -90,7 +90,7 @@ const Home = () => {
           <img
             src={battleArena}
             className="w-[450px] hover:animate-bounce cursor-pointer"
-            onClick={() => navigate("/battle")}
+            onClick={() => navigate("/join-battle")}
             onMouseEnter={handleBattleArenaSound}
           />
           <h1 className="font-rajdhani font-bold text-white text-3xl">

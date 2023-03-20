@@ -5,6 +5,7 @@ import Packs from "./Packs";
 import Register from "./Register";
 import BattleArena from "./BattleArena";
 import Inventory from "./Inventory";
+import JoinBattle from "./JoinBattle";
 
 export {
   Home,
@@ -14,4 +15,5 @@ export {
   Register,
   BattleArena,
   Inventory,
+  JoinBattle,
 };
