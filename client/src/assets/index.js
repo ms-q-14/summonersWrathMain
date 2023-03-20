@@ -9,6 +9,7 @@ import home from "./background/home.png";
 import homeBackground from "./background/homeBackground.jpg";
 import inventoryBG from "./background/inventoryBG.png";
 import packsShop from "./background/packsShop.jpg";
+import battleBackground from "./background/battleBackground.jpg";
 
 // logo
 import summonerLogo from "./summonerLogo.png";
@@ -57,6 +58,7 @@ export {
   inventoryBG,
   packsShop,
   logo,
+  battleBackground,
 };
 
 export const battlegrounds = [

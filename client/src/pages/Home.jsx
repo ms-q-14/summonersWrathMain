@@ -94,7 +94,7 @@ const Home = () => {
             onMouseEnter={handleBattleArenaSound}
           />
           <h1 className="font-rajdhani font-bold text-white text-3xl">
-            Battle Arena
+            Battle
           </h1>
         </div>
         <div>
