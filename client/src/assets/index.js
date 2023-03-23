@@ -23,6 +23,7 @@ import rank from "./rank.png";
 import inventory from "./inventory.png";
 import battleArena from "./battleArena.png";
 import store from "./store.png";
+import loader from "./loader.svg";
 // players
 import player01 from "./player01.png";
 import player02 from "./player02.png";
@@ -59,6 +60,7 @@ export {
   packsShop,
   logo,
   battleBackground,
+  loader,
 };
 
 export const battlegrounds = [

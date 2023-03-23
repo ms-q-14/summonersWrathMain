@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { battleBackground, player01, riftShard, rank, logo } from "../assets";
+import {
+  battleBackground,
+  player01,
+  riftShard,
+  rank,
+  logo,
+  loader,
+} from "../assets";
 
 import { useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
@@ -8,7 +15,16 @@ import "react-tooltip/dist/react-tooltip.css";
 const JoinBattle = () => {
   const [username, setUsername] = useState("");
   const [shards, setShards] = useState(0);
+  const [isSearching, setisSearching] = useState(false);
   const navigate = useNavigate();
+
+  const handleSearchGame = () => {
+    setisSearching(true);
+  };
+
+  const handleStopSearchGame = () => {
+    setisSearching(false);
+  };
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
@@ -68,6 +84,54 @@ const JoinBattle = () => {
               data-tooltip-place="bottom"
             />
             <Tooltip id="rank" />
+          </div>
+          <div className="grid grid-cols-5 gap-4 flex flex-row absolute inset-0 m-[350px] sm:m-[150px] ">
+            {/* Record and Match History */}
+            <div className="border-solid border-2 rounded-md border-black p-4 gap-[40px] bg-black bg-opacity-50 col-span-2 ">
+              <h1 className="flex justify-center font-rajdhani font-normal text-[34px] text-white ">
+                Record
+              </h1>
+              <div className=" h-full ">
+                <div className="flex flex-row justify-center gap-[40px] items-center">
+                  <h1 className="text-center text-[90px]">
+                    12 - <span className="text-green-600 ">W</span>
+                  </h1>
+                  <h1 className="text-center text-[100px]">
+                    <span className="text-red-600">L</span> - 2
+                  </h1>
+                </div>
+                <div className="font-rajdhani font-normal text-[34px] text-white">
+                  Match History
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-center items-center">
+              <button
+                className="flex flex-row gap-[20px] bg-red-600 px-4 py-2 rounded-lg text-white font-rajdhani items-end col-span-1"
+                onClick={isSearching ? handleStopSearchGame : handleSearchGame}
+              >
+                {isSearching ? "Searching" : "Search Battle"}
+                <svg
+                  className={
+                    isSearching
+                      ? "w-[30px] h-[30px] animate-spin flex items-center"
+                      : "hidden"
+                  }
+                >
+                  <image xlinkHref={loader} width="30" height="30" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="border-solid border-2 rounded-md border-black p-4 gap-[40px] bg-black bg-opacity-50 col-span-2 flex flex-col justify-between">
+              <div className="flex flex-col justify-end">
+                <h1 className="flex justify-center font-rajdhani font-normal text-[34px] text-white pb-4">
+                  Rank
+                </h1>
+                <div className="flex flex-row flex-wrap  overflow-y-auto"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
