@@ -10,6 +10,7 @@ import {
   rankGold,
   rankPlatinum,
   rankMasters,
+  blankRank,
 } from "../assets";
 
 import { useNavigate } from "react-router-dom";
@@ -75,6 +76,7 @@ const JoinBattle = () => {
         setRankMinMMR(0);
         setRankMaxMMR(500);
         setNextRank(rankSilver);
+        setPreviousRank(blankRank);
         break;
       case storedRankRating > 501 && storedRankRating < 700:
         setRank(rankSilver);

@@ -15,10 +15,12 @@ const RankInfo = ({
   return (
     <div className="gap-[80px]">
       <div className="flex flex-row items-center">
-        <img
-          className="2xl:w-[160px] 2xl:h-[160px] w-[80px] h-[80px] filter grayscale"
-          src={previousRank}
-        />
+        {previousRank && (
+          <img
+            className="2xl:w-[160px] 2xl:h-[160px] w-[80px] h-[80px] filter grayscale"
+            src={previousRank}
+          />
+        )}
         <img
           className="2xl:w-[320px] 2xl:h-[320px] w-[220px] h-[220px]"
           src={rank}

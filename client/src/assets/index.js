@@ -29,6 +29,7 @@ import rankSilver from "./ranks/rankSilver.png";
 import rankGold from "./ranks/rankGold.png";
 import rankPlatinum from "./ranks/rankPlatinum.png";
 import rankMasters from "./ranks/rankMasters.png";
+import blankRank from "./ranks/blankRank.png";
 // players
 import player01 from "./player01.png";
 import player02 from "./player02.png";
@@ -71,6 +72,7 @@ export {
   rankGold,
   rankPlatinum,
   rankMasters,
+  blankRank,
 };
 
 export const battlegrounds = [
