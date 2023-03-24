@@ -70,7 +70,7 @@ const Login = () => {
             console.log("Successfully Logged In!", data);
             setTimeout(() => {
               navigate("/home");
-            }, 2000);
+            }, 500);
           }
         });
       } catch (error) {
