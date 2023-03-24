@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
-import { inventoryBG, player01, riftShard, rank, logo } from "../assets";
+import {
+  inventoryBG,
+  player01,
+  riftShard,
+  logo,
+  rankBronze,
+  rankSilver,
+  rankGold,
+  rankPlatinum,
+  rankMasters,
+} from "../assets";
 import { useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
@@ -15,6 +25,8 @@ const Inventory = () => {
   const [cards, setCards] = useState([]);
   const [deck, setDeck] = useState([]);
   const [counter, setCounter] = useState(0);
+  const [rank, setRank] = useState();
+  const [rankInfo, setRankInfo] = useState("");
   const newDeck = {
     cards: deck,
     username: username,
@@ -24,6 +36,7 @@ const Inventory = () => {
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
     const storedShards = localStorage.getItem("shards");
+    const storedRankRating = localStorage.getItem("rankRating");
 
     if (storedUsername) {
       setUsername(storedUsername);
@@ -32,10 +45,33 @@ const Inventory = () => {
     if (storedShards) {
       setShards(parseInt(storedShards));
     }
-
-    // Call getNFTCards immediately after setting the username state
     if (storedUsername) {
       getNFTCards();
+    }
+
+    switch (true) {
+      case storedRankRating < 500:
+        setRank(rankBronze);
+        setRankInfo("Bronze");
+        break;
+      case storedRankRating > 501 && storedRankRating < 700:
+        setRank(rankSilver);
+        setRankInfo("Silver");
+        break;
+      case storedRankRating > 701 && storedRankRating < 1000:
+        setRank(rankGold);
+        setRankInfo("Gold");
+        break;
+      case storedRankRating > 1001 && storedRankRating < 1500:
+        setRank(rankPlatinum);
+        setRankInfo("Platinum");
+        break;
+      case storedRankRating > 1501:
+        setRank(rankMasters);
+        setRankInfo("Masters");
+        break;
+      default:
+        break;
     }
   }, []);
 
@@ -170,7 +206,7 @@ const Inventory = () => {
               src={rank}
               className="w-[80px]"
               data-tooltip-id="rank"
-              data-tooltip-content="Rank: Masters Division 1"
+              data-tooltip-content={`Rank: ${rankInfo}`}
               data-tooltip-place="bottom"
             />
             <Tooltip id="rank" />

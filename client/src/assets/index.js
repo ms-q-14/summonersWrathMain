@@ -24,6 +24,11 @@ import inventory from "./inventory.png";
 import battleArena from "./battleArena.png";
 import store from "./store.png";
 import loader from "./loader.svg";
+import rankBronze from "./ranks/rankBronze.png";
+import rankSilver from "./ranks/rankSilver.png";
+import rankGold from "./ranks/rankGold.png";
+import rankPlatinum from "./ranks/rankPlatinum.png";
+import rankMasters from "./ranks/rankMasters.png";
 // players
 import player01 from "./player01.png";
 import player02 from "./player02.png";
@@ -61,6 +66,11 @@ export {
   logo,
   battleBackground,
   loader,
+  rankBronze,
+  rankSilver,
+  rankGold,
+  rankPlatinum,
+  rankMasters,
 };
 
 export const battlegrounds = [

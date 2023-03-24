@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { packsShop, player01, riftShard, rank, logo } from "../assets";
+import {
+  packsShop,
+  player01,
+  riftShard,
+  logo,
+  rankBronze,
+  rankSilver,
+  rankGold,
+  rankPlatinum,
+  rankMasters,
+} from "../assets";
 
 import { useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
@@ -8,11 +18,14 @@ import "react-tooltip/dist/react-tooltip.css";
 const Packs = () => {
   const [username, setUsername] = useState("");
   const [shards, setShards] = useState(0);
+  const [rank, setRank] = useState();
+  const [rankInfo, setRankInfo] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
     const storedShards = localStorage.getItem("shards");
+    const storedRankRating = localStorage.getItem("rankRating");
 
     if (storedUsername) {
       setUsername(storedUsername);
@@ -20,6 +33,31 @@ const Packs = () => {
 
     if (storedShards) {
       setShards(parseInt(storedShards));
+    }
+
+    switch (true) {
+      case storedRankRating < 500:
+        setRank(rankBronze);
+        setRankInfo("Bronze");
+        break;
+      case storedRankRating > 501 && storedRankRating < 700:
+        setRank(rankSilver);
+        setRankInfo("Silver");
+        break;
+      case storedRankRating > 701 && storedRankRating < 1000:
+        setRank(rankGold);
+        setRankInfo("Gold");
+        break;
+      case storedRankRating > 1001 && storedRankRating < 1500:
+        setRank(rankPlatinum);
+        setRankInfo("Platinum");
+        break;
+      case storedRankRating > 1501:
+        setRank(rankMasters);
+        setRankInfo("Masters");
+        break;
+      default:
+        break;
     }
   }, []);
 
@@ -64,7 +102,7 @@ const Packs = () => {
               src={rank}
               className="w-[80px]"
               data-tooltip-id="rank"
-              data-tooltip-content="Rank: Masters Division 1"
+              data-tooltip-content={`Rank: ${rankInfo}`}
               data-tooltip-place="bottom"
             />
             <Tooltip id="rank" />
