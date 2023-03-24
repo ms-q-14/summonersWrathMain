@@ -65,6 +65,8 @@ const Login = () => {
             localStorage.setItem("username", res.data.username);
             localStorage.setItem("shards", res.data.shards);
             localStorage.setItem("rankRating", res.data.rankRating);
+            localStorage.setItem("wins", res.data.wins);
+            localStorage.setItem("losses", res.data.losses);
             console.log("Successfully Logged In!", data);
             setTimeout(() => {
               navigate("/home");

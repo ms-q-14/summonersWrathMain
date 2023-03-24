@@ -16,13 +16,21 @@ import { useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import MatchHistory from "../components/MatchHistory";
+import RankContainer from "../components/RankContainer";
 
 const JoinBattle = () => {
   const [username, setUsername] = useState("");
   const [shards, setShards] = useState(0);
   const [isSearching, setisSearching] = useState(false);
   const [rank, setRank] = useState();
+  const [previousRank, setPreviousRank] = useState();
+  const [nextRank, setNextRank] = useState();
   const [rankInfo, setRankInfo] = useState("");
+  const [rankMinMMR, setRankMinMMR] = useState(0);
+  const [rankMaxMMR, setRankMaxMMR] = useState(0);
+  const [rankRating, setRankRating] = useState(0);
+  const [wins, setWins] = useState(0);
+  const [losses, setLosses] = useState(0);
   const navigate = useNavigate();
 
   const handleSearchGame = () => {
@@ -37,6 +45,8 @@ const JoinBattle = () => {
     const storedUsername = localStorage.getItem("username");
     const storedShards = localStorage.getItem("shards");
     const storedRankRating = localStorage.getItem("rankRating");
+    const storedWins = localStorage.getItem("wins");
+    const storedLosses = localStorage.getItem("losses");
 
     if (storedUsername) {
       setUsername(storedUsername);
@@ -46,26 +56,55 @@ const JoinBattle = () => {
       setShards(parseInt(storedShards));
     }
 
+    if (storedWins) {
+      setWins(parseInt(storedWins));
+    }
+
+    if (storedLosses) {
+      setLosses(parseInt(storedLosses));
+    }
+
+    if (storedRankRating) {
+      setRankRating(parseInt(storedRankRating));
+    }
+
     switch (true) {
       case storedRankRating < 500:
         setRank(rankBronze);
         setRankInfo("Bronze");
+        setRankMinMMR(0);
+        setRankMaxMMR(500);
+        setNextRank(rankSilver);
         break;
       case storedRankRating > 501 && storedRankRating < 700:
         setRank(rankSilver);
         setRankInfo("Silver");
+        setRankMinMMR(501);
+        setRankMaxMMR(700);
+        setPreviousRank(rankBronze);
+        setNextRank(rankGold);
         break;
       case storedRankRating > 701 && storedRankRating < 1000:
         setRank(rankGold);
         setRankInfo("Gold");
+        setRankMinMMR(701);
+        setRankMaxMMR(1000);
+        setPreviousRank(rankSilver);
+        setNextRank(rankPlatinum);
         break;
       case storedRankRating > 1001 && storedRankRating < 1500:
         setRank(rankPlatinum);
         setRankInfo("Platinum");
+        setRankMinMMR(1001);
+        setRankMaxMMR(1500);
+        setPreviousRank(rankGold);
+        setNextRank(rankMasters);
         break;
       case storedRankRating > 1501:
         setRank(rankMasters);
         setRankInfo("Masters");
+        setRankMinMMR(1501);
+        setPreviousRank(rankPlatinum);
         break;
       default:
         break;
@@ -127,10 +166,10 @@ const JoinBattle = () => {
               <div className=" h-full ">
                 <div className="flex flex-row justify-center gap-[60px] items-center">
                   <h1 className="text-center text-[60px] ">
-                    12 - <span className="text-[#00a7ff] ">W</span>
+                    {wins} - <span className="text-[#00a7ff] ">W</span>
                   </h1>
                   <h1 className="text-center text-[60px] ">
-                    <span className="text-[#d94747]">L</span> - 2
+                    <span className="text-[#d94747]">L</span> - {losses}
                   </h1>
                 </div>
                 <div className=" font-rajdhani font-normal text-[34px] text-white">
@@ -163,7 +202,16 @@ const JoinBattle = () => {
                 <h1 className="flex justify-center font-rajdhani font-normal text-[34px] text-white pb-4">
                   Rank
                 </h1>
-                <div className="flex flex-row flex-wrap  overflow-y-auto"></div>
+                <div className="flex justify-center mt-[140px] flex-row">
+                  <RankContainer
+                    rank={rank}
+                    minMMR={rankMinMMR}
+                    maxMMR={rankMaxMMR}
+                    rankRating={rankRating}
+                    previousRank={previousRank}
+                    nextRank={nextRank}
+                  />
+                </div>
               </div>
             </div>
           </div>
