@@ -16,15 +16,15 @@ const RankInfo = ({
     <div className="gap-[80px]">
       <div className="flex flex-row items-center">
         <img
-          className="2xl:w-[120px] 2xl:h-[120px] w-[60px] h-[60px] filter grayscale"
+          className="2xl:w-[160px] 2xl:h-[160px] w-[80px] h-[80px] filter grayscale"
           src={previousRank}
         />
         <img
-          className="2xl:w-[320px] 2xl:h-[320px] w-[240px] h-[240px]"
+          className="2xl:w-[320px] 2xl:h-[320px] w-[220px] h-[220px]"
           src={rank}
         />
         <img
-          className="2xl:w-[120px] 2xl:h-[120px] w-[60px] h-[60px] filter grayscale"
+          className="2xl:w-[160px] 2xl:h-[160px] w-[80px] h-[80px] filter grayscale"
           src={nextRank}
         />
       </div>
@@ -33,10 +33,11 @@ const RankInfo = ({
           completed={userMMR}
           customLabel=" "
           maxCompleted={rankMaxMMR}
-          bgColor="#00a7ff"
+          bgColor="#c60d10"
+          height="50px"
         />
-        <h1 className=" font-rajdhani font-normal text-[34px] text-white">
-          {rankRating} / {maxMMR}
+        <h1 className=" font-rajdhani font-normal text-[50px] text-white mt-[50px]">
+          {rankRating} / {maxMMR} MMR
         </h1>
       </div>
     </div>
