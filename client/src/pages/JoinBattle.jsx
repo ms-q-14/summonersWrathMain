@@ -11,6 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import MatchHistory from "../components/MatchHistory";
 
 const JoinBattle = () => {
   const [username, setUsername] = useState("");
@@ -85,33 +86,34 @@ const JoinBattle = () => {
             />
             <Tooltip id="rank" />
           </div>
-          <div className="grid grid-cols-5 gap-4 flex flex-row absolute inset-0 m-[350px] sm:m-[150px] ">
+          <div className="grid grid-cols-5 gap-4 flex flex-row absolute inset-0 m-[350px] sm:mt-[150px] sm:mb-[150px] sm:mr-[30px] sm:ml-[30px]">
             {/* Record and Match History */}
             <div className="border-solid border-2 rounded-md border-black p-4 gap-[40px] bg-black bg-opacity-50 col-span-2 ">
               <h1 className="flex justify-center font-rajdhani font-normal text-[34px] text-white ">
-                Record
+                Season Record
               </h1>
               <div className=" h-full ">
-                <div className="flex flex-row justify-center gap-[40px] items-center">
-                  <h1 className="text-center text-[90px]">
-                    12 - <span className="text-green-600 ">W</span>
+                <div className="flex flex-row justify-center gap-[60px] items-center">
+                  <h1 className="text-center text-[60px] ">
+                    12 - <span className="text-[#00a7ff] ">W</span>
                   </h1>
-                  <h1 className="text-center text-[100px]">
-                    <span className="text-red-600">L</span> - 2
+                  <h1 className="text-center text-[60px] ">
+                    <span className="text-[#d94747]">L</span> - 2
                   </h1>
                 </div>
-                <div className="font-rajdhani font-normal text-[34px] text-white">
-                  Match History
+                <div className=" font-rajdhani font-normal text-[34px] text-white">
+                  <h1>Match History</h1>
+                  <MatchHistory />
                 </div>
               </div>
             </div>
 
             <div className="flex justify-center items-center">
               <button
-                className="flex flex-row gap-[20px] bg-red-600 px-4 py-2 rounded-lg text-white font-rajdhani items-end col-span-1"
+                className="flex items-center flex-row gap-[20px] bg-red-600 px-4 py-2 rounded-lg text-white font-rajdhani items-end col-span-1 text-[30px]"
                 onClick={isSearching ? handleStopSearchGame : handleSearchGame}
               >
-                {isSearching ? "Searching" : "Search Battle"}
+                {isSearching ? "Searching" : "Find Match"}
                 <svg
                   className={
                     isSearching
