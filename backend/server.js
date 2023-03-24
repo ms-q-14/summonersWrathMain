@@ -49,7 +49,12 @@ app.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, "mysecretkey");
-    res.json({ username: user.username, shards: user.shards, token });
+    res.json({
+      username: user.username,
+      shards: user.shards,
+      rankRating: user.rankRating,
+      token,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
