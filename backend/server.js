@@ -53,6 +53,8 @@ app.post("/login", async (req, res) => {
       username: user.username,
       shards: user.shards,
       rankRating: user.rankRating,
+      wins: user.wins,
+      losses: user.losses,
       token,
     });
   } catch (error) {
