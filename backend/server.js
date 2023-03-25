@@ -9,6 +9,8 @@ const cors = require("cors");
 const { Server } = require("socket.io");
 const http = require("http");
 const app = express();
+const { v4: uuidv4 } = require("uuid");
+const lobbyId = uuidv4();
 
 mongoose.set("strictQuery", true);
 dotenv.config();
@@ -236,45 +238,138 @@ const io = new Server(server, {
   },
 });
 
+// io.on("connection", (socket) => {
+//   console.log(`User connected ${socket.id}`);
+
+//   //creating room
+//   socket.on("create_room", (roomName) => {
+//     const newRoom = io.sockets.adapter.rooms.get(roomName);
+//     if (newRoom) {
+//       socket.emit("create_room_error", {
+//         message: `Room ${roomName} already exists`,
+//       });
+//     } else {
+//       socket.join(roomName);
+//       console.log(`Room ${roomName} created`);
+//       socket.emit("create_room_success");
+//     }
+//   });
+
+//   //joining room
+//   socket.on("join_room", (data) => {
+//     const room = io.sockets.adapter.rooms.get(data);
+//     if (room && room.size < 2) {
+//       socket.join(data);
+//       console.log(`User ${socket.id} joined room ${data}`);
+//       socket.emit("join_room_success");
+//     } else {
+//       socket.emit("join_room_error", {
+//         message: "Room does not exist or is full",
+//       });
+//     }
+//   });
+
+//   //leaving room
+//   socket.on("leave_room", (data) => {
+//     socket.disconnect(data);
+//   });
+
+//   //sending message
+//   socket.on("send_message", (data) => {
+//     socket.to(data.room).emit("receive_message", data);
+//   });
+// });
+
+const waitingLobbies = [];
+const gameLobbies = [];
+
 io.on("connection", (socket) => {
   console.log(`User connected ${socket.id}`);
 
-  //creating room
-  socket.on("create_room", (roomName) => {
-    const newRoom = io.sockets.adapter.rooms.get(roomName);
-    if (newRoom) {
-      socket.emit("create_room_error", {
-        message: `Room ${roomName} already exists`,
+  const clientId = socket.id;
+
+  socket.on("search_lobby", (username) => {
+    let waitingLobby = waitingLobbies.find((lobby) => lobby.numPlayers < 2);
+
+    if (!waitingLobby) {
+      waitingLobby = { id: uuidv4(), players: [], numPlayers: 0 };
+      waitingLobbies.push(waitingLobby);
+    }
+
+    waitingLobby.players.push({ id: clientId, username });
+    waitingLobby.numPlayers++;
+
+    socket.join(waitingLobby.id);
+
+    const firstPlayer =
+      waitingLobby.players.find((player) => player.username !== username)
+        ?.username || "";
+
+    const message =
+      waitingLobby.numPlayers === 1
+        ? `Waiting for another player to join...`
+        : `Beginning game with ${firstPlayer} and ${username}`;
+
+    io.to(waitingLobby.id).emit("player joined", {
+      numPlayers: waitingLobby.numPlayers,
+      message: message,
+    });
+
+    if (waitingLobby.numPlayers === 2) {
+      // Create a new game lobby
+      const gameLobbyId = uuidv4();
+      const gameLobby = { id: gameLobbyId, players: waitingLobby.players };
+      gameLobbies.push(gameLobby);
+
+      // Remove the waiting lobby
+      waitingLobbies.splice(waitingLobbies.indexOf(waitingLobby), 1);
+
+      // Add both players to the game lobby
+      for (const player of gameLobby.players) {
+        const playerSocket = io.sockets.sockets[player.id];
+        if (playerSocket) {
+          playerSocket.join(gameLobbyId);
+        }
+      }
+
+      // Emit an event to all clients in the game lobby
+      io.to(waitingLobby.id).emit("game_started", {
+        players: gameLobby.players,
+        gameId: gameLobbyId, // send the gameLobbyId to the frontend
       });
-    } else {
-      socket.join(roomName);
-      console.log(`Room ${roomName} created`);
-      socket.emit("create_room_success");
+      console.log("Game Lobby", gameLobbyId);
+    } else if (waitingLobbies.length === 1) {
+      // Send a message to the frontend indicating that the user is waiting for another player to join
+      io.to(clientId).emit("waiting for player", {
+        message: "Looking for another player",
+      });
     }
   });
 
-  //joining room
-  socket.on("join_room", (data) => {
-    const room = io.sockets.adapter.rooms.get(data);
-    if (room && room.size < 2) {
-      socket.join(data);
-      console.log(`User ${socket.id} joined room ${data}`);
-      socket.emit("join_room_success");
-    } else {
-      socket.emit("join_room_error", {
-        message: "Room does not exist or is full",
-      });
+  socket.on("leave_lobby", () => {
+    for (let i = 0; i < waitingLobbies.length; i++) {
+      const index = waitingLobbies[i].players.findIndex(
+        (player) => player.id === clientId
+      );
+      if (index !== -1) {
+        const username = waitingLobbies[i].players[index].username;
+        const socketId = waitingLobbies[i].players[index].socketId;
+        waitingLobbies[i].players.splice(index, 1);
+        waitingLobbies[i].numPlayers--;
+        io.to(waitingLobbies[i].id).emit("player left", {
+          numPlayers: waitingLobbies[i].numPlayers,
+          message: `${username} has left the lobby`,
+        });
+        if (waitingLobbies[i].numPlayers === 0) {
+          waitingLobbies.splice(i, 1);
+        } else {
+          io.to(socketId).emit("lobby left", {
+            message: `You have left the lobby`,
+          });
+        }
+        break;
+      }
     }
-  });
-
-  //leaving room
-  socket.on("leave_room", (data) => {
-    socket.disconnect(data);
-  });
-
-  //sending message
-  socket.on("send_message", (data) => {
-    socket.to(data.room).emit("receive_message", data);
   });
 });
 
