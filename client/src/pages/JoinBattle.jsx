@@ -18,6 +18,9 @@ import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import MatchHistory from "../components/MatchHistory";
 import RankContainer from "../components/RankContainer";
+import io from "socket.io-client";
+
+const socket = io.connect("http://localhost:3001");
 
 const JoinBattle = () => {
   const [username, setUsername] = useState("");
@@ -32,14 +35,59 @@ const JoinBattle = () => {
   const [rankRating, setRankRating] = useState(0);
   const [wins, setWins] = useState(0);
   const [losses, setLosses] = useState(0);
+  const [message, setMessage] = useState("");
+  const [gameLobbyId, setGameLobbyId] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Listen for the "player joined" event
+    socket.on("player joined", ({ numPlayers, message }) => {
+      if (numPlayers === 2) {
+        setMessage(message);
+      }
+    });
+
+    // Listen for the "waiting for player" event
+    socket.on("waiting for player", ({ message }) => {
+      setMessage(message);
+    });
+
+    socket.on("player left", ({ message }) => {
+      setMessage(message);
+    });
+
+    return () => {
+      socket.off("player joined");
+      socket.off("waiting for player");
+      socket.off("player left");
+      socket.off("game started");
+    };
+  }, []);
+
+  useEffect(() => {
+    // Listen for the "game started" event
+    socket.on("game_started", ({ gameId, players }) => {
+      console.log(`Received gameLobbyId: ${gameId}`);
+      console.log(`Received players: ${players}`);
+      setGameLobbyId(gameId);
+    });
+
+    // Cleanup the event listener on unmount
+    return () => {
+      socket.off("game started");
+    };
+  }, []); // Only run this effect once on mount
+
   const handleSearchGame = () => {
+    socket.emit("search_lobby", username);
     setisSearching(true);
   };
 
   const handleStopSearchGame = () => {
+    socket.emit("leave_lobby", username);
+    setMessage("");
     setisSearching(false);
+    setGameLobbyId("");
   };
 
   useEffect(() => {
@@ -181,7 +229,7 @@ const JoinBattle = () => {
               </div>
             </div>
 
-            <div className="flex justify-center items-center">
+            <div className="flex flex-col gap-[40px] justify-center items-center">
               <button
                 className="flex items-center flex-row gap-[20px] bg-red-600 px-4 py-2 rounded-lg text-white font-rajdhani items-end col-span-1 text-[30px]"
                 onClick={isSearching ? handleStopSearchGame : handleSearchGame}
@@ -197,6 +245,9 @@ const JoinBattle = () => {
                   <image xlinkHref={loader} width="30" height="30" />
                 </svg>
               </button>
+              {message}
+              <br />
+              {gameLobbyId}
             </div>
 
             <div className="border-solid border-2 rounded-md border-black p-4 gap-[40px] bg-black bg-opacity-50 col-span-2 flex flex-col justify-between">
