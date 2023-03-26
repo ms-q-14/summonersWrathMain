@@ -237,7 +237,7 @@ const io = new Server(server, {
   },
 });
 
-const waitingLobbies = [];
+let waitingLobbies = [];
 const gameLobbies = [];
 
 io.on("connection", (socket) => {
@@ -284,10 +284,38 @@ io.on("connection", (socket) => {
       console.log(
         `Game Lobby ${gameLobbyId} started with ${playerNames.length} players`
       );
+      // delete the waiting lobby after the game starts
+      waitingLobbies = waitingLobbies.filter(
+        (lobby) => lobby.id !== waitingLobby.id
+      );
     } else if (waitingLobbies.length === 1) {
       io.to(clientId).emit("waiting for player", {
         message: "Looking for another player",
       });
+    }
+  });
+
+  socket.on("disconnect", () => {
+    // find the lobby that the client was in
+    const lobby = waitingLobbies.find((lobby) =>
+      lobby.players.some((player) => player.id === clientId)
+    );
+
+    if (lobby) {
+      // remove the client from the lobby
+      lobby.players = lobby.players.filter((player) => player.id !== clientId);
+      lobby.numPlayers--;
+
+      // notify the remaining players in the lobby
+      io.to(lobby.id).emit("player left", {
+        numPlayers: lobby.numPlayers,
+        message: "A player has left the lobby",
+      });
+
+      // delete the lobby if there are no players left
+      if (lobby.numPlayers === 0) {
+        waitingLobbies = waitingLobbies.filter((l) => l.id !== lobby.id);
+      }
     }
   });
 
@@ -303,8 +331,6 @@ io.on("connection", (socket) => {
       socket.emit("join_room_success", { username });
     }
   });
-
-  const messages = [];
 
   socket.on("send_message", (data) => {
     const { sender, message } = data;
