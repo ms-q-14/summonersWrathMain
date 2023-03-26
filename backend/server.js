@@ -11,6 +11,7 @@ const http = require("http");
 const app = express();
 const { v4: uuidv4 } = require("uuid");
 const lobbyId = uuidv4();
+const moment = require("moment");
 
 mongoose.set("strictQuery", true);
 dotenv.config();
@@ -229,8 +230,6 @@ app.get("/deck", async (req, res) => {
   }
 });
 
-//Socket.io server
-
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173",
@@ -238,53 +237,11 @@ const io = new Server(server, {
   },
 });
 
-// io.on("connection", (socket) => {
-//   console.log(`User connected ${socket.id}`);
-
-//   //creating room
-//   socket.on("create_room", (roomName) => {
-//     const newRoom = io.sockets.adapter.rooms.get(roomName);
-//     if (newRoom) {
-//       socket.emit("create_room_error", {
-//         message: `Room ${roomName} already exists`,
-//       });
-//     } else {
-//       socket.join(roomName);
-//       console.log(`Room ${roomName} created`);
-//       socket.emit("create_room_success");
-//     }
-//   });
-
-//   //joining room
-//   socket.on("join_room", (data) => {
-//     const room = io.sockets.adapter.rooms.get(data);
-//     if (room && room.size < 2) {
-//       socket.join(data);
-//       console.log(`User ${socket.id} joined room ${data}`);
-//       socket.emit("join_room_success");
-//     } else {
-//       socket.emit("join_room_error", {
-//         message: "Room does not exist or is full",
-//       });
-//     }
-//   });
-
-//   //leaving room
-//   socket.on("leave_room", (data) => {
-//     socket.disconnect(data);
-//   });
-
-//   //sending message
-//   socket.on("send_message", (data) => {
-//     socket.to(data.room).emit("receive_message", data);
-//   });
-// });
-
 const waitingLobbies = [];
 const gameLobbies = [];
 
 io.on("connection", (socket) => {
-  console.log(`User connected ${socket.id}`);
+  console.log(`User connected to waiting Lobby ${socket.id}`);
 
   const clientId = socket.id;
 
@@ -316,34 +273,57 @@ io.on("connection", (socket) => {
     });
 
     if (waitingLobby.numPlayers === 2) {
-      // Create a new game lobby
       const gameLobbyId = uuidv4();
       const gameLobby = { id: gameLobbyId, players: waitingLobby.players };
-      gameLobbies.push(gameLobby);
 
-      // Remove the waiting lobby
-      waitingLobbies.splice(waitingLobbies.indexOf(waitingLobby), 1);
-
-      // Add both players to the game lobby
-      for (const player of gameLobby.players) {
-        const playerSocket = io.sockets.sockets[player.id];
-        if (playerSocket) {
-          playerSocket.join(gameLobbyId);
-        }
-      }
-
-      // Emit an event to all clients in the game lobby
+      const playerNames = waitingLobby.players.map((player) => player.username);
       io.to(waitingLobby.id).emit("game_started", {
-        players: gameLobby.players,
-        gameId: gameLobbyId, // send the gameLobbyId to the frontend
+        players: playerNames,
+        gameId: gameLobbyId,
       });
-      console.log("Game Lobby", gameLobbyId);
+      console.log(
+        `Game Lobby ${gameLobbyId} started with ${playerNames.length} players`
+      );
     } else if (waitingLobbies.length === 1) {
-      // Send a message to the frontend indicating that the user is waiting for another player to join
       io.to(clientId).emit("waiting for player", {
         message: "Looking for another player",
       });
     }
+  });
+
+  socket.on("join_room", (gameId, username) => {
+    const room = io.sockets.adapter.rooms.get(gameId);
+    if (room && room.size >= 2) {
+      socket.emit("join_room_error", {
+        message: `Room ${gameId} is full`,
+      });
+    } else {
+      socket.join(gameId);
+      console.log(`Room ${gameId} created`);
+      socket.emit("join_room_success", { username });
+    }
+  });
+
+  const messages = [];
+
+  socket.on("send_message", (data) => {
+    const { username, message } = data;
+    const timestamp = new Date().getTime();
+    const formattedTime = moment(timestamp).format("h:mm A");
+
+    const newMessage = {
+      username,
+      message,
+      timestamp,
+      formattedTime,
+    };
+
+    messages.push(newMessage);
+    if (messages.length > 20) {
+      messages.shift();
+    }
+
+    io.emit("receive_message", newMessage);
   });
 
   socket.on("leave_lobby", () => {

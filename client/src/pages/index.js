@@ -3,7 +3,7 @@ import DivineIntervention from "./DivineIntervention";
 import Login from "./Login";
 import Packs from "./Packs";
 import Register from "./Register";
-import BattleArena from "./BattleArena";
+import Battle from "./Battle";
 import Inventory from "./Inventory";
 import JoinBattle from "./JoinBattle";
 
@@ -13,7 +13,7 @@ export {
   Login,
   Packs,
   Register,
-  BattleArena,
+  Battle,
   Inventory,
   JoinBattle,
 };

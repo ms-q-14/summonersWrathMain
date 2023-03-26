@@ -13,7 +13,7 @@ import {
   blankRank,
 } from "../assets";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import MatchHistory from "../components/MatchHistory";
@@ -40,14 +40,12 @@ const JoinBattle = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Listen for the "player joined" event
     socket.on("player joined", ({ numPlayers, message }) => {
       if (numPlayers === 2) {
         setMessage(message);
       }
     });
 
-    // Listen for the "waiting for player" event
     socket.on("waiting for player", ({ message }) => {
       setMessage(message);
     });
@@ -65,18 +63,28 @@ const JoinBattle = () => {
   }, []);
 
   useEffect(() => {
-    // Listen for the "game started" event
     socket.on("game_started", ({ gameId, players }) => {
       console.log(`Received gameLobbyId: ${gameId}`);
       console.log(`Received players: ${players}`);
       setGameLobbyId(gameId);
+      setTimeout(() => {
+        setMessage("Game starting in 3 seconds...");
+      }, 1000);
+      setTimeout(() => {
+        setMessage("Game starting in 2 seconds...");
+      }, 2000);
+      setTimeout(() => {
+        setMessage("Game starting in 1 second...");
+      }, 3000);
+      setTimeout(() => {
+        navigate(`/battle?gameId=${gameId}`);
+      }, 4000);
     });
 
-    // Cleanup the event listener on unmount
     return () => {
       socket.off("game started");
     };
-  }, []); // Only run this effect once on mount
+  }, []);
 
   const handleSearchGame = () => {
     socket.emit("search_lobby", username);
@@ -246,8 +254,8 @@ const JoinBattle = () => {
                 </svg>
               </button>
               {message}
-              <br />
-              {gameLobbyId}
+              {/* <br />
+              {gameLobbyId} */}
             </div>
 
             <div className="border-solid border-2 rounded-md border-black p-4 gap-[40px] bg-black bg-opacity-50 col-span-2 flex flex-col justify-between">

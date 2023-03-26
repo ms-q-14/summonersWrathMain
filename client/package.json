@@ -16,7 +16,9 @@
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
     "ipfs-http-client": "^60.0.0",
+    "material-icons": "^1.13.3",
     "nanoid": "^4.0.1",
+    "query-string": "^8.1.0",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
@@ -25,6 +27,7 @@
     "react-tilt": "^0.1.4",
     "react-tooltip": "^5.10.0",
     "socket.io-client": "^4.6.1",
+    "uuidv4": "^6.2.13",
     "web3": "^1.8.2",
     "web3modal": "^1.9.9"
   },
