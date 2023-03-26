@@ -13,6 +13,7 @@ import {
   Battle,
   Inventory,
   JoinBattle,
+  ChatTest,
 } from "./pages";
 import { UserProvider } from "./context/UserProvider";
 
@@ -38,6 +39,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="/battle" element={<Battle />} />
             <Route path="/join-battle" element={<JoinBattle />} />
             <Route path="/inventory" element={<Inventory />} />
+            <Route path="/test" element={<ChatTest />} />
           </Routes>
         </BrowserRouter>
       </ThirdwebProvider>

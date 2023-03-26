@@ -17,6 +17,7 @@ module.exports = {
         heroImg: "url('/src/assets/background/hero-img.jpg')",
         landing: "url('/src/assets/background/landing.jpg')",
         home: "url('/src/assets/background/home.png')",
+        chat: "url('https://media.istockphoto.com/id/165102644/photo/old-paper.jpg?s=612x612&w=0&k=20&c=W9yT9C4BqkrknYgR0nqK5L790p-9bj762fpGq3mmMo0=')",
       },
       fontFamily: {
         rajdhani: ["Rajdhani", "sans-serif"],

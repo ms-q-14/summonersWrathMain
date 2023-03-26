@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
+import Chat from "../components/Chat";
 
 const socket = io.connect("http://localhost:3001");
 
@@ -58,19 +59,19 @@ const Battle = () => {
 
   const sendMessage = () => {
     socket.emit("send_message", {
-      username: username,
+      sender: username,
       message,
       room: room,
     });
-    setMessage("Sent Message"); // clear the message input field after sending the message
+    setMessage("");
   };
 
   useEffect(() => {
     socket.on("receive_message", (data) => {
-      setMessages((messages) => [...messages, data]); // add the new message to the messages array
+      setMessages((messages) => [...messages, data]);
     });
     return () => {
-      socket.off("receive_message"); // remove the event listener when component unmounts
+      socket.off("receive_message");
     };
   }, []);
 
@@ -99,7 +100,7 @@ const Battle = () => {
             {messages.map((message, index) => (
               <div key={index} className="flex flex-col">
                 <div className="flex flex-row justify-center">
-                  <strong>{message.username}</strong>: {message.message}
+                  <strong>{message.sender}</strong>: {message.message}
                 </div>
               </div>
             ))}
@@ -107,6 +108,7 @@ const Battle = () => {
           </>
         )}
       </div>
+      <Chat room={room} />
     </div>
   );
 };

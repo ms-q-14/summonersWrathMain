@@ -6,6 +6,7 @@ import Register from "./Register";
 import Battle from "./Battle";
 import Inventory from "./Inventory";
 import JoinBattle from "./JoinBattle";
+import ChatTest from "./ChatTest";
 
 export {
   Home,
@@ -16,4 +17,5 @@ export {
   Battle,
   Inventory,
   JoinBattle,
+  ChatTest,
 };
