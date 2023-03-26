@@ -16,6 +16,7 @@ const Chat = ({ room }) => {
   const [isChatHidden, setIsChatHidden] = useState(false);
   const messagesEndRef = useRef(null);
   const [canSendMessage, setCanSendMessage] = useState(true);
+  const [errorMessages, setErrorMessages] = useState("");
 
   //   const sendMessage = () => {
   //     if (inputValue.trim() === "") {
@@ -34,7 +35,10 @@ const Chat = ({ room }) => {
   }, []);
 
   const sendMessage = () => {
-    if (!canSendMessage) return;
+    if (!canSendMessage) {
+      setErrorMessages("You can only send a message every 3 seconds");
+      return;
+    }
     setCanSendMessage(false);
     setTimeout(() => setCanSendMessage(true), 3000);
 
@@ -67,7 +71,7 @@ const Chat = ({ room }) => {
 
   useEffect(() => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isChatHidden]);
 
   return (
     <>
