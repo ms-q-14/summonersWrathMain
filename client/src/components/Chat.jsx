@@ -15,6 +15,7 @@ const Chat = ({ room }) => {
   const [inputValue, setInputValue] = useState("");
   const [isChatHidden, setIsChatHidden] = useState(false);
   const messagesEndRef = useRef(null);
+  const [canSendMessage, setCanSendMessage] = useState(true);
 
   //   const sendMessage = () => {
   //     if (inputValue.trim() === "") {
@@ -33,12 +34,16 @@ const Chat = ({ room }) => {
   }, []);
 
   const sendMessage = () => {
+    if (!canSendMessage) return;
+    setCanSendMessage(false);
+    setTimeout(() => setCanSendMessage(true), 3000);
+
     socket.emit("send_message", {
       sender: username,
       message: inputValue,
       room: room,
     });
-    setMessage("");
+    setInputValue("");
   };
 
   useEffect(() => {
