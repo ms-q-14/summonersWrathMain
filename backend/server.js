@@ -307,21 +307,21 @@ io.on("connection", (socket) => {
   const messages = [];
 
   socket.on("send_message", (data) => {
-    const { username, message } = data;
+    const { sender, message } = data;
     const timestamp = new Date().getTime();
     const formattedTime = moment(timestamp).format("h:mm A");
 
     const newMessage = {
-      username,
+      sender,
       message,
       timestamp,
       formattedTime,
     };
 
-    messages.push(newMessage);
-    if (messages.length > 20) {
-      messages.shift();
-    }
+    // messages.push(newMessage);
+    // if (messages.length > 20) {
+    //   messages.shift();
+    // }
 
     io.emit("receive_message", newMessage);
   });
