@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import Chat from "../components/Chat";
+import { useNavigate } from "react-router-dom";
 
 const socket = io.connect("http://localhost:3001");
 
@@ -15,6 +16,7 @@ const Battle = () => {
   const [gameId, setGameId] = useState("");
   const [players, setPlayers] = useState([]);
   const [username, setUsername] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -39,6 +41,7 @@ const Battle = () => {
           alert(data.message);
           setInRoom(false);
           setRoom("");
+          navigate("/join-battle");
         });
         socket.on("join_room_success", () => {
           setInRoom(true);
@@ -54,7 +57,7 @@ const Battle = () => {
     socket.emit("leave_room", { game_id: room });
     setInRoom(false);
     setRoom("");
-    location.reload();
+    navigate("/join-battle");
   };
 
   const sendMessage = () => {

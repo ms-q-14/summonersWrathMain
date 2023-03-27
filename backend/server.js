@@ -296,23 +296,19 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    // find the lobby that the client was in
     const lobby = waitingLobbies.find((lobby) =>
       lobby.players.some((player) => player.id === clientId)
     );
 
     if (lobby) {
-      // remove the client from the lobby
       lobby.players = lobby.players.filter((player) => player.id !== clientId);
       lobby.numPlayers--;
 
-      // notify the remaining players in the lobby
       io.to(lobby.id).emit("player left", {
         numPlayers: lobby.numPlayers,
         message: "A player has left the lobby",
       });
 
-      // delete the lobby if there are no players left
       if (lobby.numPlayers === 0) {
         waitingLobbies = waitingLobbies.filter((l) => l.id !== lobby.id);
       }
