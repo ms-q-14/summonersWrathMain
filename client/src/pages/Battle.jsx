@@ -79,7 +79,7 @@ const Battle = () => {
   }, []);
 
   return (
-    <div>
+    <div class="bg-astral absolute top-0 left-0 w-screen h-screen bg-cover bg-center">
       <h1>Game Lobby Id: {gameId}</h1>
       <p>CurrentRoom: {roomName}</p>
       {inRoom === true && <p>Players: {players.join(", ")}</p>}
